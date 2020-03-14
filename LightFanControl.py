@@ -22,7 +22,6 @@ send_command = "--send=" + directory
 
 @ask.intent('LightControlIntent', mapping={'light_status': 'light_status'})
 def lightControl(light_status):
-    
     if light_status in ["toggle", "double", "double switch", "repeat"]:
         do_double_light_toggle()
         
@@ -32,16 +31,13 @@ def lightControl(light_status):
             </speak>""")
         
     elif light_status == "on":
-        if is_light_not_on_off():
-            do_double_light_toggle()
-        else:
-            do_light_toggle()
+        do_light_toggle()
         
         time.sleep(0.1)
         
         count = 0
         
-        while(is_light_off() or count > 5):
+        while(is_light_off() or count > 3):
             do_light_toggle()
             count += 1
             time.sleep(0.3)
@@ -49,16 +45,13 @@ def lightControl(light_status):
         return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
         
     elif light_status == "off":
-        if is_light_not_on_off():
-            do_double_light_toggle()
-        else:
-            do_light_toggle()
+        do_light_toggle()
         
         time.sleep(0.1)
         
         count = 0
         
-        while(is_light_on() or count > 5):
+        while(is_light_on() or count > 3):
             do_light_toggle()
             count += 1
             time.sleep(0.3)
@@ -71,7 +64,6 @@ def lightControl(light_status):
 
 @ask.intent('DimControlIntent', mapping={'dim_percentage': 'dim_percentage', 'dim_status': 'dim_status'})
 def dimControl(dim_percentage, dim_status):
-    
     full = 25
     
     if dim_percentage == None:
@@ -88,7 +80,6 @@ def dimControl(dim_percentage, dim_status):
 
 @ask.intent('FanControlIntent', mapping={'fan_status': 'fan_status'})
 def fanControl(fan_status):
-    
     if fan_status == "off":
         do_fan_off()
         return statement("Fan is off")
@@ -184,11 +175,6 @@ def is_light_off():
     reading = photocell_reading()
     print("light reading: " + str(reading))
     return reading > light_off_reading
-
-def is_light_not_on_off():
-    reading = photocell_reading()
-    print("light reading: " + str(reading))
-    return reading > light_on_reading and reading < light_off_reading
 
 
 def photocell_reading():
