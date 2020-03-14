@@ -32,7 +32,10 @@ def lightControl(light_status):
             </speak>""")
         
     elif light_status == "on":
-        do_light_toggle()        
+        if is_light_not_on_off():
+            do_double_light_toggle()
+        else:
+            do_light_toggle()
         
         time.sleep(0.1)
         
@@ -46,7 +49,10 @@ def lightControl(light_status):
         return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
         
     elif light_status == "off":
-        do_light_toggle()
+        if is_light_not_on_off():
+            do_double_light_toggle()
+        else:
+            do_light_toggle()
         
         time.sleep(0.1)
         
@@ -171,17 +177,18 @@ light_off_reading = 200000
 
 def is_light_on():
     reading = photocell_reading()
-    difference =  abs(int(reading) - int(light_on_reading))
     print("light reading: " + str(reading))
-    print("difference: " + str(difference)) 
-    return difference < 700
+    return reading < light_on_reading
 
 def is_light_off():
     reading = photocell_reading()
-    difference =  abs(int(reading) - int(light_off_reading))
     print("light reading: " + str(reading))
-    print("difference: " + str(difference)) 
-    return difference > 150000
+    return reading > light_off_reading
+
+def is_light_not_on_off():
+    reading = photocell_reading()
+    print("light reading: " + str(reading))
+    return reading > light_on_reading and reading < light_off_reading
 
 
 def photocell_reading():
@@ -201,8 +208,6 @@ def photocell_reading():
     #Count until the pin goes high
     while (GPIO.input(pin_to_circuit) == GPIO.LOW):
         count += 1
-        
-    GPIO.cleanup()    
         
     return count
 
