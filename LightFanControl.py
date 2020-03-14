@@ -48,7 +48,7 @@ def lightControl(light_status):
     
     print(print_message)
     
-def dimControl(dim_percentage):
+def dimControl(dim_percentage, dim_status):
     ir_action = "--send=" + directory
     
     cmd = [ir_ctl, device]
@@ -56,23 +56,51 @@ def dimControl(dim_percentage):
     print_message = ""
     
     full = 25
+    
+    if dim_percentage == None:
         
-    ir_action += "dim_cycle"
-    
-    percent = 1 - (float(dim_percentage) / 100)
-    
-    setting = int(round(25 * percent))
-    
-    # repeat in under to dim light continuously
-    cmd.extend([ir_action] * setting)
-    
-    multi_command_delay = "-g 20000"    
-    
-    cmd.append(multi_command_delay)
-    
-    print_message = "Lights dimmed to " +  str(dim_percentage) + " percent"
-    
-    subprocess.call(cmd)
+        if dim_status == "fade":
+            light_action = ir_action + "light_toggle"
+            
+            ir_action += "dim_cycle"
+            
+            # repeat in under to dim light continuously until very low
+            cmd.extend([ir_action] * full)
+            
+            # then turn off light
+            cmd.append(light_action)
+            
+            multi_command_delay = "-g 20000"    
+            
+            cmd.append(multi_command_delay)
+            
+            subprocess.call(cmd)
+            
+            time.sleep(0.5)
+            
+            light_cmd = [ir_ctl, device, light_action]
+            subprocess.call(light_cmd)
+            print light_cmd
+            
+            print_message = "Lights faded out"
+        
+    else:     
+        ir_action += "dim_cycle"
+        
+        percent = 1 - (float(dim_percentage) / 100)
+        
+        setting = int(round(25 * percent))
+        
+        # repeat in under to dim light continuously
+        cmd.extend([ir_action] * setting)
+        
+        multi_command_delay = "-g 20000"    
+        
+        cmd.append(multi_command_delay)
+        
+        print_message = "Lights dimmed to " +  str(dim_percentage) + " percent"
+        
+        subprocess.call(cmd)
     
     print(cmd)
     
