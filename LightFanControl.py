@@ -6,6 +6,9 @@ import logging
 from flask import Flask
 from flask_ask import Ask, statement, convert_errors
 import time
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BOARD)
 
 app = Flask(__name__)
 ask = Ask(app, '/')
@@ -15,15 +18,6 @@ ir_ctl = "/usr/bin/ir-ctl"
 directory = "/home/pi/Light-Fan-Control/IR_Codes/"
 device = "--device=/dev/lirc0"
 send_command = "--send=" + directory
-
-@ask.launch
-def launch():
-    speech_text = 'Welcome to Raspberry Pi Automation.'
-    return question(speech_text).reprompt(speech_text).simple_card(speech_text)
-
-@ask.session_ended
-def session_ended():
-    return "{}", 200
 
 
 @ask.intent('LightControlIntent', mapping={'light_status': 'light_status'})
@@ -38,12 +32,30 @@ def lightControl(light_status):
             </speak>""")
         
     elif light_status == "on":
-        do_light_toggle()
+        do_light_toggle()        
+        
+        time.sleep(0.1)
+        
+        count = 0
+        
+        while(is_light_off() or count > 5):
+            do_light_toggle()
+            count += 1
+            time.sleep(0.3)
             
         return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
         
     elif light_status == "off":
         do_light_toggle()
+        
+        time.sleep(0.1)
+        
+        count = 0
+        
+        while(is_light_on() or count > 5):
+            do_light_toggle()
+            count += 1
+            time.sleep(0.3)
             
         return statement("""<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/></speak>""")
         
@@ -152,6 +164,47 @@ def do_fan_high():
     
     subprocess.call(cmd)
     print("performed command: " + str(cmd))
+    
+
+light_on_reading = 11000
+light_off_reading = 200000
+
+def is_light_on():
+    reading = photocell_reading()
+    difference =  abs(int(reading) - int(light_on_reading))
+    print("light reading: " + str(reading))
+    print("difference: " + str(difference)) 
+    return difference < 700
+
+def is_light_off():
+    reading = photocell_reading()
+    difference =  abs(int(reading) - int(light_off_reading))
+    print("light reading: " + str(reading))
+    print("difference: " + str(difference)) 
+    return difference > 150000
+
+
+def photocell_reading():
+    count = 0
+    
+    #define the pin that goes to the circuit
+    pin_to_circuit = 16
+
+    #Output on the pin for 
+    GPIO.setup(pin_to_circuit, GPIO.OUT)
+    GPIO.output(pin_to_circuit, GPIO.LOW)
+    time.sleep(0.1)
+
+    #Change the pin back to input
+    GPIO.setup(pin_to_circuit, GPIO.IN)
+  
+    #Count until the pin goes high
+    while (GPIO.input(pin_to_circuit) == GPIO.LOW):
+        count += 1
+        
+    GPIO.cleanup()    
+        
+    return count
 
 
 if __name__ == '__main__':
