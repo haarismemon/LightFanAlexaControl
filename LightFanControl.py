@@ -48,6 +48,37 @@ def lightControl(light_status):
     
     print(print_message)
     
+def dimControl(dim_percentage):
+    ir_action = "--send=" + directory
+    
+    cmd = [ir_ctl, device]
+
+    print_message = ""
+    
+    full = 25
+        
+    ir_action += "dim_cycle"
+    
+    percent = 1 - (float(dim_percentage) / 100)
+    
+    setting = int(round(25 * percent))
+    
+    # repeat in under to dim light continuously
+    cmd.extend([ir_action] * setting)
+    
+    multi_command_delay = "-g 20000"    
+    
+    cmd.append(multi_command_delay)
+    
+    print_message = "Lights dimmed to " +  str(dim_percentage) + " percent"
+    
+    subprocess.call(cmd)
+    
+    print(cmd)
+    
+    print(print_message)
+
+    
 def fanControl(fan_status):    
     ir_action = "--send=" + directory
     
