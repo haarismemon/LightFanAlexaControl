@@ -47,6 +47,42 @@ def lightControl(light_status):
     subprocess.call(cmd)
     
     print(print_message)
+    
+def fanControl(fan_status):    
+    ir_action = "--send=" + directory
+    
+    cmd = [ir_ctl, device]
+
+    print_message = ""
+    
+    if fan_status == "off":
+        ir_action += "fan_off"
+        print_message = "Turning fan off"
+        
+    elif fan_status == "low":
+        ir_action += "fan_low"
+        print_message = "Turning fan onto low setting"
+        
+    elif fan_status == "medium":
+        ir_action += "fan_medium"
+        print_message = "Turning fan onto medium setting"
+        
+    elif fan_status == "high":
+        ir_action += "fan_high"
+        print_message = "Turning fan onto high setting"
+        
+    else:
+        print_message = "Did not understand: " + fan_status 
+
+    cmd.extend([ir_action] * 3)
+    multi_command_delay = "-g 20000"    
+    cmd.append(multi_command_delay)
+    
+    print(cmd)
+
+    subprocess.call(cmd)
+    
+    print(print_message)
 
 
 if __name__ == '__main__':
