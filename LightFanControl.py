@@ -3,14 +3,28 @@
 import subprocess
 import time
 import logging
+from flask import Flask
+from flask_ask import Ask, statement, convert_errors
 import time
 
+app = Flask(__name__)
+ask = Ask(app, '/')
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 ir_ctl = "/usr/bin/ir-ctl"
 directory = "/home/pi/Light-Fan-Control/IR_Codes/"
 device = "--device=/dev/lirc0"
 
+@ask.launch
+def launch():
+    speech_text = 'Welcome to Raspberry Pi Automation.'
+    return question(speech_text).reprompt(speech_text).simple_card(speech_text)
 
+@ask.session_ended
+def session_ended():
+    return "{}", 200
+
+
+@ask.intent('LightControlIntent', mapping={'light_status': 'light_status'})
 def lightControl(light_status):
     ir_action = "--send=" + directory
     
@@ -18,7 +32,7 @@ def lightControl(light_status):
 
     print_message = ""
     
-    if light_status == "toggle":
+    if light_status in ["toggle", "double", "double switch", "repeat"]:
         ir_action += "light_toggle"
         
         cmd.extend([ir_action] * 2)
@@ -26,17 +40,20 @@ def lightControl(light_status):
         command_delay = "-g 250000" 
         cmd.append(command_delay)
         
-        print_message = "Light toggled"
+        print_message = """<speak>
+                            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
+                            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/>
+                            </speak>"""
         
     elif light_status == "on":
         ir_action += "light_toggle"
         cmd.append(ir_action)
-        print_message = "light switched on"
+        print_message = """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/></speak>"""
         
     elif light_status == "off":
         ir_action += "light_toggle"
         cmd.append(ir_action)
-        print_message = "light switched off"  
+        print_message = """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>"""   
         
     else:
         print_message = "Did not understand: " + light_status 
@@ -46,8 +63,9 @@ def lightControl(light_status):
 
     subprocess.call(cmd)
     
-    print(print_message)
-    
+    return statement(print_message)
+
+@ask.intent('DimControlIntent', mapping={'dim_percentage': 'dim_percentage', 'dim_status': 'dim_status'})
 def dimControl(dim_percentage, dim_status):
     ir_action = "--send=" + directory
     
@@ -104,9 +122,9 @@ def dimControl(dim_percentage, dim_status):
     
     print(cmd)
     
-    print(print_message)
+    return statement(print_message)
 
-    
+@ask.intent('FanControlIntent', mapping={'fan_status': 'fan_status'})
 def fanControl(fan_status):    
     ir_action = "--send=" + directory
     
@@ -126,7 +144,7 @@ def fanControl(fan_status):
         ir_action += "fan_medium"
         print_message = "Turning fan onto medium setting"
         
-    elif fan_status == "high":
+    elif fan_status in ["high", "hi"]:
         ir_action += "fan_high"
         print_message = "Turning fan onto high setting"
         
@@ -141,8 +159,8 @@ def fanControl(fan_status):
 
     subprocess.call(cmd)
     
-    print(print_message)
-
+    return statement(print_message)
 
 if __name__ == '__main__':
-    lightControl("toggle")
+    port = 4000
+    app.run(host='0.0.0.0', port=port, debug=True)
