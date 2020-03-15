@@ -169,7 +169,7 @@ def do_fan_high():
     
 
 light_on_reading = 11000
-light_off_reading = 300000
+light_off_reading = 250000
 
 def is_light_on():
     reading = photocell_reading()
@@ -179,7 +179,7 @@ def is_light_on():
 def is_light_off():
     reading = photocell_reading()
     print("is_light_off, light reading: " + str(reading))
-    return reading > light_off_reading
+    return reading == light_off_reading
 
 def is_light_not_on_off():
     reading = photocell_reading()
@@ -202,7 +202,7 @@ def photocell_reading():
     GPIO.setup(pin_to_circuit, GPIO.IN)
   
     #Count until the pin goes high
-    while (GPIO.input(pin_to_circuit) == GPIO.LOW):
+    while (GPIO.input(pin_to_circuit) == GPIO.LOW) and count != light_off_reading:
         count += 1
         
     return count
