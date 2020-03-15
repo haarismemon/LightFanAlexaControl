@@ -33,28 +33,28 @@ def lightControl(light_status):
     elif light_status == "on":
         do_light_toggle()
         
-        time.sleep(0.1)
+        time.sleep(0.2)
         
         count = 0
         
-        while(is_light_off() or count > 3):
+        while(is_light_off() and count != 3):
             do_light_toggle()
             count += 1
-            time.sleep(0.3)
+            time.sleep(0.2)
             
         return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
         
     elif light_status == "off":
         do_light_toggle()
         
-        time.sleep(0.1)
+        time.sleep(0.2)
         
         count = 0
         
-        while(is_light_on() or count > 3):
+        while(is_light_on() and count != 3):
             do_light_toggle()
             count += 1
-            time.sleep(0.3)
+            time.sleep(0.2)
             
         return statement("""<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/></speak>""")
         
@@ -169,21 +169,21 @@ def do_fan_high():
     
 
 light_on_reading = 11000
-light_off_reading = 200000
+light_off_reading = 300000
 
 def is_light_on():
     reading = photocell_reading()
-    print("light reading: " + str(reading))
+    print("is_light_on, light reading: " + str(reading))
     return reading < light_on_reading
 
 def is_light_off():
     reading = photocell_reading()
-    print("light reading: " + str(reading))
+    print("is_light_off, light reading: " + str(reading))
     return reading > light_off_reading
 
 def is_light_not_on_off():
     reading = photocell_reading()
-    print("light reading: " + str(reading))
+    print("is_light_not_on_off, light reading: " + str(reading))
     return reading > light_on_reading and reading < light_off_reading
 
 
