@@ -73,7 +73,12 @@ def dimControl(dim_percentage, dim_status):
             do_light_toggle()
             return statement("Lights faded out")
         
-    else:     
+    else:
+        if is_light_not_on_off():
+            do_double_light_toggle()
+
+        time.sleep(0.5)
+
         do_light_dim(full, dim_percentage)
         return statement("Lights dimmed to " +  str(dim_percentage) + " percent")
     
@@ -175,6 +180,11 @@ def is_light_off():
     reading = photocell_reading()
     print("light reading: " + str(reading))
     return reading > light_off_reading
+
+def is_light_not_on_off():
+    reading = photocell_reading()
+    print("light reading: " + str(reading))
+    return reading > light_on_reading and reading < light_off_reading
 
 
 def photocell_reading():
