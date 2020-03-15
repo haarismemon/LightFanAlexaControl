@@ -15,7 +15,12 @@ logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
 @ask.intent('LightControlIntent', mapping={'light_status': 'light_status'})
 def light_control(light_status):
-    if light_status in ["toggle", "double", "double switch", "repeat"]:
+    if light_status in ["toggle", "flip"]:
+        do_light_toggle()
+
+        return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
+
+    elif light_status in ["double", "repeat"]:
         do_double_light_toggle()
         
         return statement("""<speak>

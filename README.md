@@ -1,1 +1,1 @@
-# LightFanAlexaControl
+# light-fan-control-alexa
