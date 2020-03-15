@@ -37,7 +37,7 @@ def lightControl(light_status):
         
         count = 0
         
-        while(is_light_off() and count != 3):
+        while(not is_light_on() and count != 3):
             do_light_toggle()
             count += 1
             time.sleep(0.2)
@@ -172,22 +172,22 @@ light_on_reading = 11000
 light_off_reading = 250000
 
 def is_light_on():
-    reading = photocell_reading()
+    reading = photocell_reading(light_on_reading)
     print("is_light_on, light reading: " + str(reading))
     return reading < light_on_reading
 
 def is_light_off():
-    reading = photocell_reading()
+    reading = photocell_reading(light_off_reading)
     print("is_light_off, light reading: " + str(reading))
     return reading == light_off_reading
 
 def is_light_not_on_off():
-    reading = photocell_reading()
+    reading = photocell_reading(light_off_reading)
     print("is_light_not_on_off, light reading: " + str(reading))
     return reading > light_on_reading and reading < light_off_reading
 
 
-def photocell_reading():
+def photocell_reading(limit):
     count = 0
     
     #define the pin that goes to the circuit
@@ -202,7 +202,7 @@ def photocell_reading():
     GPIO.setup(pin_to_circuit, GPIO.IN)
   
     #Count until the pin goes high
-    while (GPIO.input(pin_to_circuit) == GPIO.LOW) and count != light_off_reading:
+    while (GPIO.input(pin_to_circuit) == GPIO.LOW) and count != limit:
         count += 1
         
     return count
