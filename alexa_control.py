@@ -69,16 +69,26 @@ def dim_control(dim_percentage, dim_status):
             do_light_dim(full, 0)
             time.sleep(0.5)
             do_light_toggle()
-            return statement("Lights faded out")
+            
+            return statement("""<speak>
+            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
+            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/>
+            </speak>""")
         
     else:
-        if is_light_not_on_off():
+        if is_light_off():
+            do_light_toggle()
+        elif is_light_not_on_off():
             do_double_light_toggle()
 
         time.sleep(0.5)
 
         do_light_dim(full, dim_percentage)
-        return statement("Lights dimmed to " +  str(dim_percentage) + " percent")
+        
+        return statement("""<speak>
+            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
+            <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/>
+            </speak>""")
     
 
 @ask.intent('FanControlIntent', mapping={'fan_status': 'fan_status'})
