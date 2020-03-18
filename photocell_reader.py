@@ -16,11 +16,6 @@ def is_light_off():
     print("is_light_off, light reading: " + str(reading))
     return reading == light_off_reading
 
-def is_light_not_on_off():
-    reading = photocell_reading(light_off_reading)
-    print("is_light_not_on_off, light reading: " + str(reading))
-    return reading > (light_on_reading - 6000) and reading < light_off_reading
-
 
 def photocell_reading(limit):
     count = 0

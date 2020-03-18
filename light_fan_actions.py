@@ -1,4 +1,7 @@
 import subprocess
+import time
+
+from photocell_reader import *
 
 ir_ctl = "/usr/bin/ir-ctl"
 directory = "/home/pi/light_fan_control/ir_codes/"
@@ -11,6 +14,22 @@ def do_light_toggle():
     
     subprocess.call(cmd)
     print("performed command: " + str(cmd))
+    
+def ensure_light_on(num):
+    count = 0
+        
+    while(not is_light_on() and count != num):
+        do_light_toggle()
+        count += 1
+        time.sleep(0.2)
+
+def ensure_light_off(num):
+    count = 0
+        
+    while(not is_light_on() and count != num):
+        do_light_toggle()
+        count += 1
+        time.sleep(0.2)
 
 def do_double_light_toggle():
     ir_action = [send_command + "light_toggle"] * 2    
@@ -21,9 +40,11 @@ def do_double_light_toggle():
     print("performed command: " + str(cmd))
     
 
-def do_light_dim(full, dim_percentage):
+def do_light_dim(dim_percentage):
+    full = 25
+    
     percent = 1 - (float(dim_percentage) / 100)
-    setting = int(round(25 * percent))
+    setting = int(round(full * percent))
     
     # repeat in order to dim light continuously
     ir_action = [send_command + "dim_cycle"] * setting
