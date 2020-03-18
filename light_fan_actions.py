@@ -26,7 +26,7 @@ def ensure_light_on(num):
 def ensure_light_off(num):
     count = 0
         
-    while(not is_light_on() and count != num):
+    while(is_light_on() and count != num):
         do_light_toggle()
         count += 1
         time.sleep(0.2)

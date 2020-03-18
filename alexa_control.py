@@ -51,7 +51,7 @@ def light_control(light_status):
 def dim_control(dim_percentage, dim_status):
     if dim_percentage == None:
         if dim_status in ["fade", "darkness"]:
-            ensure_light_on(2)
+            ensure_light_on(3)
             
             do_light_dim(0)
             time.sleep(0.5)
@@ -63,7 +63,7 @@ def dim_control(dim_percentage, dim_status):
             </speak>""")
         
     else:
-        ensure_light_on(2)
+        ensure_light_on(3)
 
         time.sleep(0.5)
 
