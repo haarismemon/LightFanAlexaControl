@@ -11,16 +11,19 @@ app = Flask(__name__)
 ask = Ask(app, '/')
 logging.getLogger("flask_ask").setLevel(logging.DEBUG)
 
+last_dim_percentage = 100
 
 @ask.intent('LightControlIntent', mapping={'light_status': 'light_status'})
 def light_control(light_status):
     if light_status in ["toggle", "flip"]:
         do_light_toggle()
+        resetLastDimPercentage()
 
         return statement( """<speak><audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/></speak>""")
 
     elif light_status in ["double", "repeat"]:
         do_double_light_toggle()
+        resetLastDimPercentage()
         
         return statement("""<speak>
             <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
@@ -29,6 +32,7 @@ def light_control(light_status):
         
     elif light_status == "on":
         do_light_toggle()
+        resetLastDimPercentage()
         
         time.sleep(0.2)
         ensure_light_on(4)
@@ -37,6 +41,7 @@ def light_control(light_status):
         
     elif light_status == "off":
         do_light_toggle()
+        resetLastDimPercentage()
         
         time.sleep(0.2)
         ensure_light_off(4)
@@ -56,11 +61,27 @@ def dim_control(dim_percentage, dim_status):
             do_light_dim(0)
             time.sleep(0.5)
             do_light_toggle()
+            resetLastDimPercentage()
             
             return statement("""<speak>
             <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
             <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/>
             </speak>""")
+        
+        elif dim_status in ["what"]:            
+            return statement("It is " + str(last_dim_percentage) + " percent")
+        
+        elif dim_status in ["retry", "repeat"]:
+            do_double_light_toggle()
+
+            time.sleep(1)
+
+            do_light_dim(last_dim_percentage)
+            
+            return statement("""<speak>
+                <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
+                <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_02\"/>
+                </speak>""")
         
     else:
         ensure_light_on(3)
@@ -68,6 +89,7 @@ def dim_control(dim_percentage, dim_status):
         time.sleep(0.5)
 
         do_light_dim(dim_percentage)
+        setLastDimPercentage(dim_percentage)
         
         return statement("""<speak>
             <audio src=\"soundbank://soundlibrary/musical/amzn_sfx_bell_short_chime_01\"/>
@@ -99,6 +121,14 @@ def fan_control(fan_status):
 @ask.intent('AMAZON.FallbackIntent')
 def fallback():
     return statement('Did not understand')
+
+def resetLastDimPercentage():
+    global last_dim_percentage
+    last_dim_percentage = 100
+    
+def setLastDimPercentage(dim):
+    global last_dim_percentage
+    last_dim_percentage = dim
 
 
 if __name__ == '__main__':
