@@ -1,0 +1,190 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "my room",
+            "intents": [
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "LightControlIntent",
+                    "slots": [
+                        {
+                            "name": "light_status",
+                            "type": "LIGHT_STATUS"
+                        }
+                    ],
+                    "samples": [
+                        "{light_status} the lights off",
+                        "{light_status} the lights on",
+                        "{light_status} the lights",
+                        "{light_status} the light off",
+                        "{light_status} the light on",
+                        "to {light_status}",
+                        "{light_status}",
+                        "Turn {light_status}",
+                        "Light {light_status}",
+                        "Switch the light {light_status}",
+                        "{light_status} the light",
+                        "Turn the light {light_status}"
+                    ]
+                },
+                {
+                    "name": "FanControlIntent",
+                    "slots": [
+                        {
+                            "name": "fan_status",
+                            "type": "FAN_STATUS"
+                        }
+                    ],
+                    "samples": [
+                        "Fan {fan_status}",
+                        "Turn the fan on to {fan_status}",
+                        "switch {fan_status} the fan",
+                        "Turn fan to {fan_status}",
+                        "Put fan on {fan_status}",
+                        "Turn fan {fan_status}"
+                    ]
+                },
+                {
+                    "name": "DimControlIntent",
+                    "slots": [
+                        {
+                            "name": "dim_percentage",
+                            "type": "AMAZON.NUMBER"
+                        },
+                        {
+                            "name": "dim_status",
+                            "type": "DIM_STATUS"
+                        }
+                    ],
+                    "samples": [
+                        "{dim_status} is the percentage",
+                        "{dim_status} is the percent",
+                        "{dim_status} is percent",
+                        "{dim_status} is the dim percentage",
+                        "{dim_status} dim",
+                        "{dim_status} to black",
+                        "{dim_status} to darkness",
+                        "{dim_status} out",
+                        "dim light to {dim_percentage} percent",
+                        "dim the lights to {dim_percentage} percent",
+                        "dim {dim_percentage}",
+                        "dim {dim_percentage} percent",
+                        "{dim_percentage} percent",
+                        "dim to {dim_percentage} percent"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "LIGHT_STATUS",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "repeat"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "flip"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "double"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "on"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "off"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "toggle"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "FAN_STATUS",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "high"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "medium"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "low"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "off"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "DIM_STATUS",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "what"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "repeat"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "darkness"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "retry"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "fade"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
