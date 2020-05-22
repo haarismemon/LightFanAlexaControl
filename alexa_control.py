@@ -99,20 +99,20 @@ def dim_control(dim_percentage, dim_status):
 
 @ask.intent('FanControlIntent', mapping={'fan_status': 'fan_status'})
 def fan_control(fan_status):
-    if fan_status == "off":
+    if fan_status in ["off", "stop"]:
         do_fan_off()
         return statement("Fan is off")
         
-    elif fan_status == "low":
+    elif fan_status in ["low", "on", "slow"]:
         do_fan_low()
         return statement("Fan is on low")
         
-    elif fan_status == "medium":
-        do_fan_medium()
+    elif fan_status in ["medium", "faster"]:
+        do_fan_high()
         return statement("Fan is on medium")
         
-    elif fan_status in ["high", "hi"]:
-        do_fan_high()
+    elif fan_status in ["high", "hi", "fastest", "max", "maximum"]:
+        do_fan_medium()
         return statement("Fan is on high")
         
     else:
