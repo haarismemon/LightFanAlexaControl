@@ -16,9 +16,14 @@ smtpPass = password
 toAdd = email
 fromAdd = smtpUser
 
+alexaDevConsole = '\n\nAlexa Dev Console: ' + alexaDevConsoleUrl
+
 subject = 'Alexa Pi New Endpoint'
 header = 'To: ' + toAdd + '\n' 'From: ' + fromAdd + '\n' + 'Subject: ' + subject
-body = 'The pi zero for the alexa light control has been switched off and back on again.\n\nNew endpoint is:\n' + newEndpoint
+
+ip_address = subprocess.check_output("hostname -I | awk '{print $1}'", shell=True)
+
+body = 'The pi zero for the alexa light control has been switched off and back on again.\n\nNew endpoint is:\n' + newEndpoint + alexaDevConsole + '\n\nIP Address: ' + ip_address
 
 print header + '\n' + body
 
