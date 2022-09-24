@@ -3,7 +3,7 @@ import time
 
 GPIO.setmode(GPIO.BOARD)
 
-light_on_reading = 350
+light_on_reading = 500
 
 def is_light_on():
     reading = photocell_reading(light_on_reading)
